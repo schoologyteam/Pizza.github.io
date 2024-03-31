@@ -22,8 +22,7 @@ public class PlayerController : MonoBehaviour
 
     private Rigidbody rb;
 
-    [SerializeField]
-    private float jumpForce;
+    public float jumpForce;
 
     private bool grounded;
 
@@ -56,6 +55,14 @@ public class PlayerController : MonoBehaviour
     private Vector3 SetPlayerRotationBackToNormal;
     public GameObject pizzaGuy;
 
+    public Leaderboard leaderboard;
+
+    private float ogPlayerSpeed;
+
+    private GameObject sfxManager;
+
+    private SFXManager SFXManager;
+
     private void Awake()
     {
         PlayerInputActions = new PlayerInputs();
@@ -67,12 +74,17 @@ public class PlayerController : MonoBehaviour
         rb = GetComponent<Rigidbody>();
         jumpCount = 0;
         reloadTimer = reloadTime + 1;
+        Physics.gravity = new Vector3(0, -9.8f, 0);
         og_Gravity = Physics.gravity;
         fallingGravity = new Vector3(Physics.gravity.x, Physics.gravity.y * 1.5f, Physics.gravity.z);
         yStopper = new Vector3(rb.velocity.x, 0, rb.velocity.z);
         pizzaUI.text = amoutOfPizzas.ToString();
         ScoreUI.text = "Score: 0";
         SetPlayerRotationBackToNormal = new Vector3(0, 90, 0);
+        ogPlayerSpeed = playerSpeed;
+
+        sfxManager = GameObject.Find("SFXManager");
+        SFXManager = sfxManager.GetComponent<SFXManager>();
 
     }
 
@@ -92,8 +104,6 @@ public class PlayerController : MonoBehaviour
 
     }
 
-    
-
     private void OnDisable()
     {
         Jump.Disable();
@@ -106,7 +116,7 @@ public class PlayerController : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        transform.Translate(playerSpeed/100, 0, 0, Space.World);
+        transform.Translate(playerSpeed * Time.deltaTime, 0, 0, Space.World);
         reloadTimer += Time.deltaTime;
 
         if(grounded == false && rb.velocity.y <= 0)
@@ -116,17 +126,19 @@ public class PlayerController : MonoBehaviour
 
     }
 
+    
+
     private void Jumped(InputAction.CallbackContext context)
     {
         
         if(jumpCount < 2 && grounded == true)
         {
-            rb.AddForce(new Vector3(0, jumpForce, 0));
+            rb.AddForce(new Vector3(0, jumpForce * transform.localScale.y, 0));
             jumpCount++;
             playerAnimator.SetBool("HitGround", false);
             playerAnimator.SetTrigger("Jump");
-            //playerAnimator.ResetTrigger("Jump");
-            
+            SFXManager.PlaySFX(5);
+
         }
 
         if(jumpCount < 2 && grounded == false)
@@ -136,7 +148,8 @@ public class PlayerController : MonoBehaviour
             jumpCount++;
             playerAnimator.SetBool("HitGround", false);
             playerAnimator.SetTrigger("Jump");
-            
+            SFXManager.PlaySFX(5);
+
         }
         
     }
@@ -164,6 +177,8 @@ public class PlayerController : MonoBehaviour
         {
             this.gameObject.transform.localScale = new Vector3(1, 1, 1);
         }
+
+        SFXManager.PlaySFX(8);
     }
 
     public void UpdatePizzaUI()
@@ -173,7 +188,7 @@ public class PlayerController : MonoBehaviour
 
     private void UpdateScore()
     {
-        score += amoutOfPizzas * 100;
+        score += (amoutOfPizzas * amoutOfPizzas) * 100;
         amoutOfPizzas = 0;
         UpdatePizzaUI();
         ScoreUI.text = "Score: " + score.ToString();
@@ -190,9 +205,24 @@ public class PlayerController : MonoBehaviour
         reloadTimer = 0;
         GameObject Ammo = ObjectPool.SharedInstance.GetAmmo();
         Ammo.transform.position = ammoSpawner.transform.position;
+        Ammo.transform.localScale = transform.localScale/8;
         Ammo.SetActive(true);
+        SFXManager.PlaySFX(6);
         yield return new WaitForSeconds(1.5f);
         Ammo.SetActive(false);
+    }
+
+    private IEnumerator DeathRoutine()
+    {
+        //Time.timeScale = 0;
+        playerAnimator.SetBool("Death", true);
+        SFXManager.PlaySFX(7);
+        playerSpeed = 0;
+        PlayerPrefs.SetInt("CurrentScore", score);
+        yield return new WaitForSecondsRealtime(3);
+        //yield return leaderboard.SubmitScore(score);
+        //Time.timeScale = 1;
+        SceneManager.LoadScene("LeaderboardScene", LoadSceneMode.Single);
     }
 
     private void OnCollisionEnter(Collision collision)
@@ -208,12 +238,18 @@ public class PlayerController : MonoBehaviour
             pizzaGuy.transform.eulerAngles = SetPlayerRotationBackToNormal;
             pizzaGuy.transform.position = new Vector3(this.transform.position.x, this.transform.position.y, this.transform.position.z);
 
+            if(playerSpeed < ogPlayerSpeed) 
+            {
+                playerSpeed = ogPlayerSpeed;
+            }
+
 
         }
 
         if (collision.gameObject.tag == "Enemy")
         {
-            SceneManager.LoadScene("SampleScene", LoadSceneMode.Single);
+
+            StartCoroutine(DeathRoutine());
         }
 
         
@@ -232,6 +268,16 @@ public class PlayerController : MonoBehaviour
         if (other.tag == "customer")
         {
             UpdateScore();
+        }
+
+        if(other.tag == "Bounce")
+        {
+            rb.velocity = Vector3.zero;
+            jumpCount = 2;
+            playerSpeed = 0.33f;
+            Physics.gravity = fallingGravity;
+            rb.AddForce(new Vector3(0, jumpForce * 1.75f, 0));
+            playerAnimator.SetTrigger("Jump");
         }
     }
 

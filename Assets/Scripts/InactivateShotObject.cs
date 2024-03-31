@@ -9,10 +9,25 @@ public class InactivateShotObject : MonoBehaviour
 
     public PlayerController PlayerController { get; private set; }
 
+    [SerializeField]
+    private int points;
+
+    private Vector3 xPlosionOffset;
+
+    private GameObject sfxManager;
+
+    private SFXManager SFXManager;
+
     private void Start()
     {
         Player = GameObject.FindGameObjectWithTag("Player");
         PlayerController = Player.GetComponent<PlayerController>();
+
+        xPlosionOffset = new Vector3(0,0.5f,0);
+
+        sfxManager = GameObject.Find("SFXManager");
+        SFXManager = sfxManager.GetComponent<SFXManager>();
+
     }
 
 
@@ -20,10 +35,30 @@ public class InactivateShotObject : MonoBehaviour
     {
         if (other.tag == "Ammo")
         {
-            PlayerController.AddScore(10);
+            PlayerController.AddScore(points);
+
+            GameObject xPlosion = ObjectPool.SharedInstance.GetXplosion();
+            xPlosion.transform.position = transform.position + xPlosionOffset;
+            xPlosion.gameObject.SetActive(true);
+            xPlosion.GetComponent<Xplosion>().StartXPlosion();
+            SFXManager.PlaySFX(0);
+            this.gameObject.SetActive(false);
+
+        }
+    }
+
+    private void OnCollisionEnter(Collision collision)
+    {
+        if(collision.gameObject.tag == "Player")
+        {
+            GameObject xPlosion = ObjectPool.SharedInstance.GetXplosion();
+            xPlosion.transform.position = transform.position + xPlosionOffset;
+            xPlosion.gameObject.SetActive(true);
+            xPlosion.GetComponent<Xplosion>().StartXPlosion();
+            SFXManager.PlaySFX(0);
             this.gameObject.SetActive(false);
         }
     }
 
-    
+
 }

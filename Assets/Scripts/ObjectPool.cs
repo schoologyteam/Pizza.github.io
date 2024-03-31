@@ -11,11 +11,19 @@ public class ObjectPool : MonoBehaviour
     public List<GameObject> ammoList;
     public GameObject ammo;
 
+    public List<GameObject> xPlosionList;
+    public GameObject xPlosion;
+
     public List<GameObject> EasyRoads1;
     public GameObject EasyRoadObject1;
 
     public List<GameObject> EasyRoads2;
     public GameObject EasyRoadObject2;
+
+    public List<GameObject> EasyRoads3;
+    public GameObject EasyRoadObject3;
+
+
 
     public int amountToPool;
 
@@ -58,6 +66,24 @@ public class ObjectPool : MonoBehaviour
             EasyRoads2.Add(tmp3);
         }
 
+        EasyRoads3 = new List<GameObject>();
+        GameObject tmp4;
+        for (int i = 0; i < amountToPool; i++)
+        {
+            tmp4 = Instantiate(EasyRoadObject3);
+            tmp4.SetActive(false);
+            EasyRoads3.Add(tmp4);
+        }
+
+        xPlosionList = new List<GameObject>();
+        GameObject tmp5;
+        for (int i = 0; i < amountToPool; i++)
+        {
+            tmp5 = Instantiate(xPlosion);
+            tmp5.SetActive(false);
+            xPlosionList.Add(tmp5);
+        }
+
     }
 
     public GameObject GetEasyRoad1()
@@ -68,11 +94,31 @@ public class ObjectPool : MonoBehaviour
         {
             if (!EasyRoads1[i].activeInHierarchy)
             {
-                if (EasyRoads1[i].transform.Find("pizza"))
+                /*if (EasyRoads1[i].transform.Find("pizza"))
                 {
                     EasyRoads1[i].transform.Find("pizza").gameObject.SetActive(true);
+                }*/
+
+                foreach (Transform child in EasyRoads1[i].transform)
+                {
+                    if (child.gameObject.CompareTag("Enemy"))
+                    {
+                        child.gameObject.SetActive(true);
+                    }
+
+
                 }
-                
+
+                foreach (Transform child in EasyRoads1[i].transform)
+                {
+                    if (child.gameObject.CompareTag("Pizza"))
+                    {
+                        child.gameObject.SetActive(true);
+                    }
+
+
+                }
+
                 return EasyRoads1[i];
 
             }
@@ -89,12 +135,66 @@ public class ObjectPool : MonoBehaviour
         {
             if (!EasyRoads2[i].activeInHierarchy)
             {
-                if (EasyRoads2[i].transform.Find("pizza"))
+                foreach (Transform child in EasyRoads2[i].transform)
                 {
-                    EasyRoads2[i].transform.Find("pizza").gameObject.SetActive(true);
+                    if (child.gameObject.CompareTag("Enemy"))
+                    {
+                        child.gameObject.SetActive(true);
+                    }
+
+
+                }
+
+                foreach (Transform child in EasyRoads2[i].transform)
+                {
+                    if (child.gameObject.CompareTag("Pizza"))
+                    {
+                        child.gameObject.SetActive(true);
+                    }
+
+
                 }
 
                 return EasyRoads2[i];
+
+            }
+        }
+
+        return null;
+    }
+
+
+    public GameObject GetEasyRoad3()
+    {
+
+
+        for (int i = 0; i < amountToPool; i++)
+        {
+            if (!EasyRoads3[i].activeInHierarchy)
+            {
+                foreach (Transform child in EasyRoads3[i].transform)
+                {
+                    if (child.gameObject.CompareTag("Enemy"))
+                    {
+                        child.gameObject.SetActive(true);
+
+                        
+                    }
+
+
+                }
+
+                foreach (Transform child in EasyRoads3[i].transform)
+                {
+                    if (child.gameObject.CompareTag("Pizza"))
+                    {
+                        child.gameObject.SetActive(true);
+                    }
+
+
+                }
+
+                return EasyRoads3[i];
 
             }
         }
@@ -113,6 +213,22 @@ public class ObjectPool : MonoBehaviour
 
 
                 return ammoList[i];
+
+            }
+        }
+
+        return null;
+    }
+
+    public GameObject GetXplosion()
+    {
+        for (int i = 0; i < amountToPool; i++)
+        {
+            if (!xPlosionList[i].activeInHierarchy)
+            {
+
+
+                return xPlosionList[i];
 
             }
         }

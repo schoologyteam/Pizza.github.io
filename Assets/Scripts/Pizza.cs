@@ -20,6 +20,10 @@ public class Pizza : MonoBehaviour
 
     public PlayerController PlayerController { get; private set; }
 
+    private GameObject sfxManager;
+
+    private SFXManager SFXManager;
+
 
     // Start is called before the first frame update
     void Start()
@@ -33,15 +37,20 @@ public class Pizza : MonoBehaviour
         ScaleTo = ogScale * size;
 
         transform.DOScale(ScaleTo, length).SetEase(Ease.InOutSine).SetLoops(-1, LoopType.Yoyo);
+
+        sfxManager = GameObject.Find("SFXManager");
+        SFXManager = sfxManager.GetComponent<SFXManager>();
     }
 
-    private void OnCollisionEnter(Collision collision)
+    private void OnTriggerEnter(Collider other)
     {
-        if(collision.gameObject.tag == "Player")
+        if (other.tag == "Player")
         {
-            this.gameObject.SetActive(false);
+
+            SFXManager.PlaySFX(3);
             PlayerController.amoutOfPizzas++;
             PlayerController.UpdatePizzaUI();
+            this.gameObject.SetActive(false);
         }
     }
 }

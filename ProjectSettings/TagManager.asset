@@ -8,6 +8,9 @@ TagManager:
   - Enemy
   - Ammo
   - customer
+  - FxTemporaire
+  - Pizza
+  - Bounce
   layers:
   - Default
   - TransparentFX

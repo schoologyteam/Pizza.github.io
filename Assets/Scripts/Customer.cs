@@ -11,6 +11,10 @@ public class Customer : MonoBehaviour
 
     public PlayerController PlayerController { get; private set; }
 
+    private GameObject sfxManager;
+
+    private SFXManager SFXManager;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -19,29 +23,17 @@ public class Customer : MonoBehaviour
         Player = GameObject.FindGameObjectWithTag("Player");
         PlayerController = Player.GetComponent<PlayerController>();
 
-    }
+        sfxManager = GameObject.Find("SFXManager");
+        SFXManager = sfxManager.GetComponent<SFXManager>();
 
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
-
-    private void OnCollisionEnter(Collision collision)
-    {
-        if(collision.gameObject.tag == "Player" && PlayerController.amoutOfPizzas > 0)
-        {
-            customerAnimator.SetTrigger("celebrate");
-            Debug.Log("Here");
-        }
     }
 
     private void OnTriggerEnter(Collider other)
     {
         if(other.tag == "Player" && PlayerController.amoutOfPizzas > 0)
         {
+            SFXManager.PlaySFX(4);
             customerAnimator.SetTrigger("celebrate");
-            Debug.Log("Here2");
         }
     }
 
