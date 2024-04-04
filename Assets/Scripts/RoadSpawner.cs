@@ -21,6 +21,10 @@ public class RoadSpawner : MonoBehaviour
 
     private int rand;
 
+    private Vector3 offset;
+
+    
+
     // Start is called before the first frame update
     void Start()
     {
@@ -29,24 +33,30 @@ public class RoadSpawner : MonoBehaviour
         startPoint = this.gameObject.transform.position;
         ToAdd = new Vector3(20, 0, 0);
         isSpawning = false;
+        offset = new Vector3(Player.position.x, transform.position.y, transform.position.z);
+        
     }
 
     // Update is called once per frame
     void Update()
     {
-        transform.Translate(speed * Time.deltaTime, 0, 0, Space.World);
+        //transform.Translate(speed * Time.deltaTime, 0, 0, Space.World);
+
+        transform.position = new Vector3(Player.position.x + 30, transform.position.y, transform.position.z);
 
         if(Vector3.Distance(startPoint, transform.position) > 20 && isSpawning == false)
         {
             SpawnRoad();
         }
+
+
     }
 
 
     private void SpawnRoad()
     {
 
-        rand = Random.Range(1, 4);
+        /*rand = Random.Range(1, 4);
 
         if(rand == 1)
         {
@@ -76,9 +86,16 @@ public class RoadSpawner : MonoBehaviour
             Road.SetActive(true);
             startPoint = startPoint + ToAdd;
             isSpawning = false;
-        }
+        }*/
 
-        
+
+        isSpawning = true;
+        GameObject Road = ObjectPool.SharedInstance.GetRoad();
+        Road.transform.position = startPoint + ToAdd;
+        Road.SetActive(true);
+        startPoint = startPoint + ToAdd;
+        isSpawning = false;
+
 
     }
 }

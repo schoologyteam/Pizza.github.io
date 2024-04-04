@@ -23,9 +23,17 @@ public class ObjectPool : MonoBehaviour
     public List<GameObject> EasyRoads3;
     public GameObject EasyRoadObject3;
 
+    public List<GameObject> AllRoads;
+
+    private GameObject Player;
+
 
 
     public int amountToPool;
+
+    private int randomRoad;
+
+    public float gameTimer;
 
 
     private void Awake()
@@ -36,7 +44,8 @@ public class ObjectPool : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        
+
+        Player = GameObject.FindGameObjectWithTag("Player");
 
         EasyRoads1 = new List<GameObject>();
         GameObject tmp;
@@ -84,6 +93,13 @@ public class ObjectPool : MonoBehaviour
             xPlosionList.Add(tmp5);
         }
 
+        gameTimer = 0;
+
+    }
+
+    private void Update()
+    {
+        gameTimer += Time.deltaTime;
     }
 
     public GameObject GetEasyRoad1()
@@ -200,6 +216,112 @@ public class ObjectPool : MonoBehaviour
         }
 
         return null;
+    }
+
+    public GameObject GetRoad()
+    {
+        
+
+        for (int i = 0; i < AllRoads.Count-1; i++)
+        {
+
+
+
+            if(gameTimer < 90)
+            {
+                randomRoad = Random.Range(0, 6);
+                Debug.Log(randomRoad);
+            }
+
+            else if(gameTimer >= 90 && gameTimer < 180)
+            {
+                randomRoad = Random.Range(0, 12);
+                Debug.Log(randomRoad);
+            }
+
+            else if(gameTimer >= 180)
+            {
+                randomRoad = Random.Range(0, AllRoads.Count);
+                Debug.Log(randomRoad);
+            }
+
+            
+
+            if (!AllRoads[randomRoad].activeInHierarchy)
+            {
+
+                /*foreach (Transform child in AllRoads[i].transform)
+                {
+                    if (child.gameObject.CompareTag("Enemy") && Vector3.Distance(Player.transform.position, transform.position) > 20)
+                    {
+                        Debug.Log("here1");
+                        child.gameObject.SetActive(true);
+
+
+                    }
+
+
+                }
+
+                foreach (Transform child in AllRoads[i].transform)
+                {
+                    if (child.gameObject.CompareTag("Pizza") && Vector3.Distance(Player.transform.position, transform.position) > 20)
+                    {
+                        Debug.Log("here2");
+                        child.gameObject.SetActive(true);
+                    }
+
+
+                } */
+
+                return AllRoads[randomRoad];
+            }
+
+
+        }
+
+
+
+
+        for(int i = 0; i < AllRoads.Count-1; i++)
+        {
+            if (!AllRoads[i].activeInHierarchy)
+            {
+
+
+
+                /*foreach (Transform child in AllRoads[i].transform)
+                {
+                    if (child.gameObject.CompareTag("Enemy") && Vector3.Distance(Player.transform.position, transform.position) > 20)
+                    {
+                        child.gameObject.SetActive(true);
+                        Debug.Log("here3");
+
+                    }
+
+
+                }
+
+                foreach (Transform child in AllRoads[i].transform)
+                {
+                    if (child.gameObject.CompareTag("Pizza") && Vector3.Distance(Player.transform.position, transform.position) > 20)
+                    {
+                        child.gameObject.SetActive(true);
+                        Debug.Log("here4");
+                    }
+
+
+                }*/
+
+
+                return AllRoads[i];
+            }
+        }
+
+        return AllRoads[0];
+        
+
+        
     }
 
     public GameObject GetAmmo()

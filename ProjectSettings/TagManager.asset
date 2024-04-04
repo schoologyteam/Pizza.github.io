@@ -11,6 +11,8 @@ TagManager:
   - FxTemporaire
   - Pizza
   - Bounce
+  - R_Barrel
+  - M_Barrel
   layers:
   - Default
   - TransparentFX

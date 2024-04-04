@@ -35,19 +35,26 @@ public class GooBig : MonoBehaviour
 
         sfxManager = GameObject.Find("SFXManager");
         SFXManager = sfxManager.GetComponent<SFXManager>();
+
     }
 
     private void OnTriggerEnter(Collider other)
     {
 
 
-        if(other.tag == "Ammo" && hp > 0)
+        if(other.tag == "Ammo")
         {
-            hp--;
-            gooAnimator.SetTrigger("Hit");
-            SFXManager.PlaySFX(2);
 
-            if (hp <= 0)
+
+            hp--;
+
+            if (hp > 1)
+            {
+                gooAnimator.SetTrigger("Hit");
+                SFXManager.PlaySFX(2);
+            }
+
+            else if (hp <= 0)
             {
                 PlayerController.AddScore(points);
 
@@ -58,8 +65,9 @@ public class GooBig : MonoBehaviour
 
                 SFXManager.PlaySFX(0);
                 SFXManager.PlaySFX(1);
-
-                this.gameObject.SetActive(false);
+                hp = 3;
+                gooAnimator.ResetTrigger("Hit");
+                gameObject.SetActive(false);
             }
         }
 

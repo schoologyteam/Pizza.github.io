@@ -41,6 +41,7 @@ public class SmallGoo : MonoBehaviour
 
         sfxManager = GameObject.Find("SFXManager");
         SFXManager = sfxManager.GetComponent<SFXManager>();
+
     }
 
     // Update is called once per frame
@@ -93,6 +94,11 @@ public class SmallGoo : MonoBehaviour
         rb.velocity = Vector3.zero;
         rb.angularVelocity = Vector3.zero;
         transform.position = og_pos.transform.position;
+
+        if(gameObject.activeInHierarchy == false)
+        {
+            gameObject.SetActive(true);
+        }
     }
 
     private void OnTriggerEnter(Collider other)
@@ -112,7 +118,7 @@ public class SmallGoo : MonoBehaviour
             SFXManager.PlaySFX(0);
             SFXManager.PlaySFX(1);
 
-            this.gameObject.SetActive(false);
+            gameObject.SetActive(false);
         }
     }
 

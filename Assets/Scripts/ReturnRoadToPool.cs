@@ -18,6 +18,32 @@ public class ReturnRoadToPool : MonoBehaviour
     {
         if (Vector3.Distance(Player.transform.position, transform.position) > 30 && transform.position.x < Player.transform.position.x)
         {
+
+
+            foreach (Transform child in transform)
+            {
+                if (child.gameObject.CompareTag("Enemy") && Vector3.Distance(Player.transform.position, transform.position) > 30)
+                {
+                    child.gameObject.SetActive(true);
+                    //Debug.Log("here3");
+
+                }
+
+
+            }
+
+            foreach (Transform child in transform)
+            {
+                if (child.gameObject.CompareTag("Pizza") && Vector3.Distance(Player.transform.position, transform.position) > 30)
+                {
+                    child.gameObject.SetActive(true);
+                    Debug.Log("here4");
+                }
+
+
+            }
+
+
             this.gameObject.SetActive(false);
         }
     }

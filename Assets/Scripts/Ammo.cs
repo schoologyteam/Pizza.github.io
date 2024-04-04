@@ -29,5 +29,10 @@ public class Ammo : MonoBehaviour
             gameObject.SetActive(false);
         }
 
+        if (other.tag == "Ground")
+        {
+            gameObject.SetActive(false);
+        }
+
     }
 }

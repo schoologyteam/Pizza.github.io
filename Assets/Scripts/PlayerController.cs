@@ -55,13 +55,25 @@ public class PlayerController : MonoBehaviour
     private Vector3 SetPlayerRotationBackToNormal;
     public GameObject pizzaGuy;
 
-    public Leaderboard leaderboard;
-
     private float ogPlayerSpeed;
 
     private GameObject sfxManager;
 
     private SFXManager SFXManager;
+
+    private bool inBarrel;
+
+    private bool useGravity;
+
+    [SerializeField]
+    private float barrelShotMul;
+
+    [SerializeField]
+    private ParticleSystem barrelShotEffect;
+
+    [SerializeField]
+    private Animator transitionAni;
+    private bool hasStarted;
 
     private void Awake()
     {
@@ -85,6 +97,14 @@ public class PlayerController : MonoBehaviour
 
         sfxManager = GameObject.Find("SFXManager");
         SFXManager = sfxManager.GetComponent<SFXManager>();
+
+        inBarrel = false;
+
+        useGravity = true;
+
+        hasStarted = false;
+
+        StartCoroutine(StartDelay());
 
     }
 
@@ -119,9 +139,15 @@ public class PlayerController : MonoBehaviour
         transform.Translate(playerSpeed * Time.deltaTime, 0, 0, Space.World);
         reloadTimer += Time.deltaTime;
 
-        if(grounded == false && rb.velocity.y <= 0)
+        if(grounded == false && rb.velocity.y <= 0 && useGravity == true)
         {
             Physics.gravity = fallingGravity;
+        }
+
+        if(inBarrel == true)
+        {
+            transform.position = transform.parent.transform.position;
+            rb.velocity = Vector3.zero;
         }
 
     }
@@ -131,7 +157,7 @@ public class PlayerController : MonoBehaviour
     private void Jumped(InputAction.CallbackContext context)
     {
         
-        if(jumpCount < 2 && grounded == true)
+        if(jumpCount < 2 && grounded == true && inBarrel == false)
         {
             rb.AddForce(new Vector3(0, jumpForce * transform.localScale.y, 0));
             jumpCount++;
@@ -141,7 +167,7 @@ public class PlayerController : MonoBehaviour
 
         }
 
-        if(jumpCount < 2 && grounded == false)
+        if(jumpCount < 2 && grounded == false && inBarrel == false)
         {
             rb.velocity = yStopper;
             rb.AddForce(new Vector3(0, jumpForce, 0));
@@ -151,12 +177,18 @@ public class PlayerController : MonoBehaviour
             SFXManager.PlaySFX(5);
 
         }
+
+        if(inBarrel == true)
+        {
+
+            StartCoroutine(ShotFromBarrel());
+        }
         
     }
 
     private void Shooting(InputAction.CallbackContext context)
     {
-        if(reloadTimer >= reloadTime)
+        if(reloadTimer >= reloadTime && inBarrel == false)
         {
 
             StartCoroutine(Shot());
@@ -173,7 +205,7 @@ public class PlayerController : MonoBehaviour
             this.gameObject.transform.localScale = new Vector3(0.5f, 0.5f, 0.5f);
         }
 
-        else if(this.gameObject.transform.localScale.y == 0.5f)
+        else if(this.gameObject.transform.localScale.y < 1)
         {
             this.gameObject.transform.localScale = new Vector3(1, 1, 1);
         }
@@ -214,15 +246,60 @@ public class PlayerController : MonoBehaviour
 
     private IEnumerator DeathRoutine()
     {
-        //Time.timeScale = 0;
-        playerAnimator.SetBool("Death", true);
-        SFXManager.PlaySFX(7);
+        
+        if(hasStarted == true)
+        {
+            hasStarted = false;
+            playerAnimator.SetBool("Death", true);
+            SFXManager.PlaySFX(7);
+            playerSpeed = 0;
+            rb.velocity = Vector3.zero;
+            PlayerPrefs.SetInt("CurrentScore", score);
+
+            yield return new WaitForSecondsRealtime(1.5f);
+            transitionAni.SetTrigger("End");
+
+            yield return new WaitForSecondsRealtime(2.5f);
+
+            SceneManager.LoadScene("LeaderboardScene", LoadSceneMode.Single);
+        }
+        
+        
+        
+    }
+
+    private IEnumerator ShotFromBarrel()
+    {
+
+        //barrelShotEffect.transform.parent = null;
+        barrelShotEffect.Play();
+
+        inBarrel = false;
+        rb.AddForce(transform.parent.GetChild(0).up * jumpForce * barrelShotMul);
+        transform.parent = null;
+        transform.position = new Vector3(transform.position.x, transform.position.y, 0);
+        pizzaGuy.SetActive(true);
+        
+        jumpCount = 2;
+        SFXManager.PlaySFX(11);
+        yield return new WaitForSeconds(0.25f);
+        useGravity = true;
+        Physics.gravity = fallingGravity;
+        barrelShotEffect.transform.SetParent(this.gameObject.transform);
+        
+    }
+
+    private IEnumerator StartDelay()
+    {
+        Physics.gravity = Vector3.zero;
+        rb.useGravity = false;
         playerSpeed = 0;
-        PlayerPrefs.SetInt("CurrentScore", score);
-        yield return new WaitForSecondsRealtime(3);
-        //yield return leaderboard.SubmitScore(score);
-        //Time.timeScale = 1;
-        SceneManager.LoadScene("LeaderboardScene", LoadSceneMode.Single);
+        transitionAni.SetTrigger("Start");
+        playerAnimator.SetTrigger("Jump");
+        yield return new WaitForSeconds(1.25f);
+        hasStarted = true;
+        Physics.gravity = fallingGravity;
+        rb.useGravity = true;
     }
 
     private void OnCollisionEnter(Collision collision)
@@ -238,7 +315,7 @@ public class PlayerController : MonoBehaviour
             pizzaGuy.transform.eulerAngles = SetPlayerRotationBackToNormal;
             pizzaGuy.transform.position = new Vector3(this.transform.position.x, this.transform.position.y, this.transform.position.z);
 
-            if(playerSpeed < ogPlayerSpeed) 
+            if(playerSpeed < ogPlayerSpeed && hasStarted == true) 
             {
                 playerSpeed = ogPlayerSpeed;
             }
@@ -278,6 +355,42 @@ public class PlayerController : MonoBehaviour
             Physics.gravity = fallingGravity;
             rb.AddForce(new Vector3(0, jumpForce * 1.75f, 0));
             playerAnimator.SetTrigger("Jump");
+        }
+
+        if (other.tag == "R_Barrel")
+        {
+
+            transform.SetParent(other.transform);
+            pizzaGuy.SetActive(false);
+            this.gameObject.transform.localScale = new Vector3(0.5f, 0.5f, 0.5f);
+            inBarrel = true;
+            playerSpeed = 0;
+            transform.position = other.transform.position;
+            Physics.gravity = Vector3.zero;
+            useGravity = false;
+            grounded = false;
+            barrelShotEffect.transform.position = other.transform.GetChild(0).transform.Find("Effect").transform.position;
+            barrelShotEffect.transform.SetParent(other.transform.GetChild(0).transform.Find("Effect").transform);
+            barrelShotEffect.transform.eulerAngles = Vector3.zero;
+            //transform.position = transform.parent.position;
+        }
+
+        if (other.tag == "M_Barrel")
+        {
+
+            transform.SetParent(other.transform);
+            pizzaGuy.SetActive(false);
+            this.gameObject.transform.localScale = new Vector3(0.5f, 0.5f, 0.5f);
+            inBarrel = true;
+            playerSpeed = 0;
+            transform.position = other.transform.position;
+            Physics.gravity = Vector3.zero;
+            useGravity = false;
+            grounded = false;
+
+            barrelShotEffect.transform.position = transform.parent.Find("Effect").transform.position;
+            barrelShotEffect.transform.SetParent(transform.parent.Find("Effect").transform);
+
         }
     }
 

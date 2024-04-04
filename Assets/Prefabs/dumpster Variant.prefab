@@ -127,7 +127,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: -4216859302048453862, guid: 7f059b5b66400b24699fe978938f5276, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 0.2462718
+      value: 0.109
       objectReference: {fileID: 0}
     - target: {fileID: -4216859302048453862, guid: 7f059b5b66400b24699fe978938f5276, type: 3}
       propertyPath: m_LocalPosition.y
@@ -172,6 +172,10 @@ PrefabInstance:
     - target: {fileID: -927199367670048503, guid: 7f059b5b66400b24699fe978938f5276, type: 3}
       propertyPath: m_Name
       value: dumpster Variant
+      objectReference: {fileID: 0}
+    - target: {fileID: -347947372879619153, guid: 7f059b5b66400b24699fe978938f5276, type: 3}
+      propertyPath: m_TagString
+      value: Ground
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []

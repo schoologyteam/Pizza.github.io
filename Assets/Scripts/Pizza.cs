@@ -40,6 +40,7 @@ public class Pizza : MonoBehaviour
 
         sfxManager = GameObject.Find("SFXManager");
         SFXManager = sfxManager.GetComponent<SFXManager>();
+
     }
 
     private void OnTriggerEnter(Collider other)
@@ -50,7 +51,7 @@ public class Pizza : MonoBehaviour
             SFXManager.PlaySFX(3);
             PlayerController.amoutOfPizzas++;
             PlayerController.UpdatePizzaUI();
-            this.gameObject.SetActive(false);
+            gameObject.SetActive(false);
         }
     }
 }

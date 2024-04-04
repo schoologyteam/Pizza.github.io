@@ -42,7 +42,9 @@ public class InactivateShotObject : MonoBehaviour
             xPlosion.gameObject.SetActive(true);
             xPlosion.GetComponent<Xplosion>().StartXPlosion();
             SFXManager.PlaySFX(0);
-            this.gameObject.SetActive(false);
+            gameObject.SetActive(false);
+
+
 
         }
     }
@@ -56,7 +58,9 @@ public class InactivateShotObject : MonoBehaviour
             xPlosion.gameObject.SetActive(true);
             xPlosion.GetComponent<Xplosion>().StartXPlosion();
             SFXManager.PlaySFX(0);
-            this.gameObject.SetActive(false);
+            gameObject.SetActive(false);
+
+            //StartCoroutine(Activator());
         }
     }
 
