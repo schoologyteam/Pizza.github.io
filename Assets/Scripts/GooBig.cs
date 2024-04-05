@@ -7,21 +7,23 @@ public class GooBig : MonoBehaviour
 
     private GameObject Player;
 
-    public PlayerController PlayerController { get; private set; }
+    public PlayerController PlayerController { get; private set; }  //Player Controller Script
 
     [SerializeField]
-    private int points;
+    private int points; //Score to add when destroyed by player
 
     [SerializeField]
     private int hp;
+
+    private int maxHP;
 
     private Animator gooAnimator;
 
     private Vector3 xPlosionOffset;
 
-    private GameObject sfxManager;
+    private GameObject sfxManager;   //Sound Effect Manager Object
 
-    private SFXManager SFXManager;
+    private SFXManager SFXManager; //Sound Effect Manager Script
 
     // Start is called before the first frame update
     void Start()
@@ -35,6 +37,8 @@ public class GooBig : MonoBehaviour
 
         sfxManager = GameObject.Find("SFXManager");
         SFXManager = sfxManager.GetComponent<SFXManager>();
+
+        maxHP = hp;
 
     }
 
@@ -54,9 +58,9 @@ public class GooBig : MonoBehaviour
                 SFXManager.PlaySFX(2);
             }
 
-            else if (hp <= 0)
+            else if (hp < 1)
             {
-                PlayerController.AddScore(points);
+                PlayerController.AddScore(points); //Adds score to player
 
                 GameObject xPlosion = ObjectPool.SharedInstance.GetXplosion();
                 xPlosion.transform.position = transform.position + xPlosionOffset;
@@ -65,7 +69,7 @@ public class GooBig : MonoBehaviour
 
                 SFXManager.PlaySFX(0);
                 SFXManager.PlaySFX(1);
-                hp = 3;
+                hp = maxHP;
                 gooAnimator.ResetTrigger("Hit");
                 gameObject.SetActive(false);
             }

@@ -8,39 +8,26 @@ public class RoadSpawner : MonoBehaviour
 
     private Transform Player;
 
-    private float speed;
-
-    [SerializeField]
-    private GameObject TestRoad;
-
     private Vector3 startPoint;
 
-    private Vector3 ToAdd;
+    private Vector3 ToAdd;  //The Amount added in x-axis when spawning new road.
 
-    private bool isSpawning;
-
-    private int rand;
-
-    private Vector3 offset;
-
+    private bool isSpawning;  //Bool to check if spawning.
     
 
     // Start is called before the first frame update
     void Start()
     {
         Player = GameObject.FindGameObjectWithTag("Player").transform;
-        speed = Player.GetComponent<PlayerController>().playerSpeed;
         startPoint = this.gameObject.transform.position;
         ToAdd = new Vector3(20, 0, 0);
         isSpawning = false;
-        offset = new Vector3(Player.position.x, transform.position.y, transform.position.z);
         
     }
 
     // Update is called once per frame
     void Update()
     {
-        //transform.Translate(speed * Time.deltaTime, 0, 0, Space.World);
 
         transform.position = new Vector3(Player.position.x + 30, transform.position.y, transform.position.z);
 
@@ -53,42 +40,8 @@ public class RoadSpawner : MonoBehaviour
     }
 
 
-    private void SpawnRoad()
+    private void SpawnRoad() //Method to spawn road.
     {
-
-        /*rand = Random.Range(1, 4);
-
-        if(rand == 1)
-        {
-            isSpawning = true;
-            GameObject Road = ObjectPool.SharedInstance.GetEasyRoad1();
-            Road.transform.position = transform.position + ToAdd;
-            Road.SetActive(true);
-            startPoint = startPoint + ToAdd;
-            isSpawning = false;
-        }
-
-        else if (rand == 2)
-        {
-            isSpawning = true;
-            GameObject Road = ObjectPool.SharedInstance.GetEasyRoad2();
-            Road.transform.position = transform.position + ToAdd;
-            Road.SetActive(true);
-            startPoint = startPoint + ToAdd;
-            isSpawning = false;
-        }
-
-        else
-        {
-            isSpawning = true;
-            GameObject Road = ObjectPool.SharedInstance.GetEasyRoad3();
-            Road.transform.position = transform.position + ToAdd;
-            Road.SetActive(true);
-            startPoint = startPoint + ToAdd;
-            isSpawning = false;
-        }*/
-
-
         isSpawning = true;
         GameObject Road = ObjectPool.SharedInstance.GetRoad();
         Road.transform.position = startPoint + ToAdd;

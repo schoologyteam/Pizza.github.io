@@ -11,8 +11,8 @@ public class MainMenuManager : MonoBehaviour
     [SerializeField]
     private Animator ani;
 
-    private bool clicked;
-    private bool started;
+    private bool clicked;  //Bool to see if Start Button has been clicked
+    private bool started;  // //Bool if buttons are active
 
 
     private void Start()
@@ -23,7 +23,7 @@ public class MainMenuManager : MonoBehaviour
         StartCoroutine(StartTransition());
     }
 
-    public void ExitGame()
+    public void ExitGame() //Method for quitting the game when Quit Button is clicked.
     {
         if(started == true)
         {
@@ -34,7 +34,7 @@ public class MainMenuManager : MonoBehaviour
         
     }
 
-    public void StartGame()
+    public void StartGame()  //Method for starting the game when Start Button is clicked.
     {
         if(clicked == false && started == true)
         {
@@ -44,7 +44,7 @@ public class MainMenuManager : MonoBehaviour
         
     }
 
-    private IEnumerator StartingGame()
+    private IEnumerator StartingGame() //Couroutine to start the game
     {
         
           sfx.Play();
@@ -57,7 +57,7 @@ public class MainMenuManager : MonoBehaviour
 
     }
 
-    private IEnumerator StartTransition()
+    private IEnumerator StartTransition()   //Couroutine for start transition animation
     {
         ani.SetTrigger("Start");
         yield return new WaitForSeconds(2f);

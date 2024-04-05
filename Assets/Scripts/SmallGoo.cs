@@ -7,26 +7,26 @@ public class SmallGoo : MonoBehaviour
 
     private GameObject Player;
 
-    private GameObject og_pos;
+    private GameObject og_pos;   //The original position of the enemy.
 
     [SerializeField]
     private float speed;
 
     [SerializeField]
-    private int maxDistance;
+    private int maxDistance;  //Max Distance where Enemy can "See"
 
     private Rigidbody rb;
 
     [SerializeField]
-    private int points;
+    private int points;   //Score to add when destroyed by player
 
-    public PlayerController PlayerController { get; private set; }
+    public PlayerController PlayerController { get; private set; }   //Player Controller Script
 
     private Vector3 xPlosionOffset;
 
-    private GameObject sfxManager;
+    private GameObject sfxManager;   //Sound Effect Manager Object
 
-    private SFXManager SFXManager;
+    private SFXManager SFXManager;  //Sound Effect Manager Script
 
     // Start is called before the first frame update
     void Start()
@@ -50,7 +50,7 @@ public class SmallGoo : MonoBehaviour
         Hit();
     }
 
-    private RaycastHit Hit()
+    private RaycastHit Hit()   //Checks if player is seen.
     {
 
         Ray ray = new Ray(transform.position, transform.forward);
@@ -87,7 +87,7 @@ public class SmallGoo : MonoBehaviour
     }
 
 
-    private IEnumerator Rush()
+    private IEnumerator Rush()  //Rushes enemy towards player if player is seen.
     {
         rb.AddForce(-speed, 0, 0);
         yield return new WaitForSeconds(5f);

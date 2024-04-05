@@ -8,11 +8,6 @@ public class Xplosion : MonoBehaviour
     [SerializeField]
     private ParticleSystem particles;
 
-    private void Start()
-    {
-        //particles = GetComponent<ParticleSystem>();
-    }
-
     public void StartXPlosion()
     {
        
@@ -21,7 +16,7 @@ public class Xplosion : MonoBehaviour
     }
 
 
-    public IEnumerator Xploding()
+    public IEnumerator Xploding()  //Couroutine for enemy explosion effect.
     {
         particles.Play();
         yield return new WaitForSeconds(particles.main.duration);

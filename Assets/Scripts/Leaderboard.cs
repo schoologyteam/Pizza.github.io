@@ -8,13 +8,13 @@ public class Leaderboard : MonoBehaviour
 {
 
 
-    private string LeaderboardKey = "pizzapocalypse_lb";
+    private string LeaderboardKey = "pizzapocalypse_lb";  //Leaderboard Key from LootLocker
 
     public TextMeshProUGUI playerNames;
     public TextMeshProUGUI playerScores;
 
 
-    public IEnumerator SubmitScore(int scoreToUpload)
+    public IEnumerator SubmitScore(int scoreToUpload)  //Couroutine that updates Players Score to server if players highest score
     {
         bool done = false;
         string PlayerID = PlayerPrefs.GetString("PlayerID");
@@ -40,7 +40,7 @@ public class Leaderboard : MonoBehaviour
         yield return new WaitWhile(() => done == false);
     }
 
-    public IEnumerator FetchHighScores()
+    public IEnumerator FetchHighScores()  //Couroutine that Fetches the high scores from server
     {
         bool done = false;
 

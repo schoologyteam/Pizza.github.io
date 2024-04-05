@@ -16,6 +16,7 @@ public class ReturnRoadToPool : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        //Acitivates the pizzas & enemies back before setting object inactive.
         if (Vector3.Distance(Player.transform.position, transform.position) > 30 && transform.position.x < Player.transform.position.x)
         {
 
@@ -25,7 +26,6 @@ public class ReturnRoadToPool : MonoBehaviour
                 if (child.gameObject.CompareTag("Enemy") && Vector3.Distance(Player.transform.position, transform.position) > 30)
                 {
                     child.gameObject.SetActive(true);
-                    //Debug.Log("here3");
 
                 }
 
@@ -37,7 +37,7 @@ public class ReturnRoadToPool : MonoBehaviour
                 if (child.gameObject.CompareTag("Pizza") && Vector3.Distance(Player.transform.position, transform.position) > 30)
                 {
                     child.gameObject.SetActive(true);
-                    Debug.Log("here4");
+
                 }
 
 

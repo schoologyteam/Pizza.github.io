@@ -26,7 +26,7 @@ public class PlayerController : MonoBehaviour
 
     private bool grounded;
 
-    private float jumpCount;
+    private float jumpCount;    //For double Jump
 
     [SerializeField]
     private GameObject ammoSpawner;
@@ -42,7 +42,7 @@ public class PlayerController : MonoBehaviour
 
     private Vector3 fallingGravity;
 
-    private Vector3 yStopper;
+    private Vector3 yStopper;  //Stops Velocity of Y for second jump.
 
     [SerializeField]
     private Text pizzaUI;
@@ -52,18 +52,18 @@ public class PlayerController : MonoBehaviour
 
     public Animator playerAnimator;
 
-    private Vector3 SetPlayerRotationBackToNormal;
-    public GameObject pizzaGuy;
+    private Vector3 SetPlayerRotationBackToNormal;  //Keeps Player rotation as what it needs to be.
+    public GameObject pizzaGuy; //Player mesh object
 
-    private float ogPlayerSpeed;
+    private float ogPlayerSpeed;  //Stores players original speed
 
-    private GameObject sfxManager;
+    private GameObject sfxManager; //Sound Effect Manager Object
 
-    private SFXManager SFXManager;
+    private SFXManager SFXManager;  //Sound Effect Manager Script
 
-    private bool inBarrel;
+    private bool inBarrel; //Bool to check if player is in a barrel.
 
-    private bool useGravity;
+    private bool useGravity;  //Bool to check if gravity will be used.
 
     [SerializeField]
     private float barrelShotMul;
@@ -73,7 +73,11 @@ public class PlayerController : MonoBehaviour
 
     [SerializeField]
     private Animator transitionAni;
-    private bool hasStarted;
+    private bool hasStarted; //Bool to check when movement starts.
+
+    private Vector3 normalScale;
+    private Vector3 smallScale;
+
 
     private void Awake()
     {
@@ -95,6 +99,11 @@ public class PlayerController : MonoBehaviour
         SetPlayerRotationBackToNormal = new Vector3(0, 90, 0);
         ogPlayerSpeed = playerSpeed;
 
+        normalScale = new Vector3(1, 1, 1);
+        smallScale = new Vector3(0.5f, 0.5f, 0.5f);
+
+
+
         sfxManager = GameObject.Find("SFXManager");
         SFXManager = sfxManager.GetComponent<SFXManager>();
 
@@ -108,7 +117,7 @@ public class PlayerController : MonoBehaviour
 
     }
 
-    private void OnEnable()
+    private void OnEnable()   //New Input system Enables
     {
         Jump = PlayerInputActions.Player.Jump;
         Jump.Enable();
@@ -124,7 +133,7 @@ public class PlayerController : MonoBehaviour
 
     }
 
-    private void OnDisable()
+    private void OnDisable()  //New Input system Disables
     {
         Jump.Disable();
 
@@ -139,7 +148,7 @@ public class PlayerController : MonoBehaviour
         transform.Translate(playerSpeed * Time.deltaTime, 0, 0, Space.World);
         reloadTimer += Time.deltaTime;
 
-        if(grounded == false && rb.velocity.y <= 0 && useGravity == true)
+        if(grounded == false && rb.velocity.y <= 0 && useGravity == true)   //Checks if player is falling
         {
             Physics.gravity = fallingGravity;
         }
@@ -154,7 +163,7 @@ public class PlayerController : MonoBehaviour
 
     
 
-    private void Jumped(InputAction.CallbackContext context)
+    private void Jumped(InputAction.CallbackContext context)    //method for jumping/shooting from barrel
     {
         
         if(jumpCount < 2 && grounded == true && inBarrel == false)
@@ -170,7 +179,7 @@ public class PlayerController : MonoBehaviour
         if(jumpCount < 2 && grounded == false && inBarrel == false)
         {
             rb.velocity = yStopper;
-            rb.AddForce(new Vector3(0, jumpForce, 0));
+            rb.AddForce(new Vector3(0, jumpForce * transform.localScale.y, 0));
             jumpCount++;
             playerAnimator.SetBool("HitGround", false);
             playerAnimator.SetTrigger("Jump");
@@ -186,7 +195,7 @@ public class PlayerController : MonoBehaviour
         
     }
 
-    private void Shooting(InputAction.CallbackContext context)
+    private void Shooting(InputAction.CallbackContext context)  //Shooting method.
     {
         if(reloadTimer >= reloadTime && inBarrel == false)
         {
@@ -198,27 +207,27 @@ public class PlayerController : MonoBehaviour
         
     }
 
-    private void ChangingSize(InputAction.CallbackContext context)
+    private void ChangingSize(InputAction.CallbackContext context)  //Method to change players size.
     {
         if(this.gameObject.transform.localScale.y == 1)
         {
-            this.gameObject.transform.localScale = new Vector3(0.5f, 0.5f, 0.5f);
+            this.gameObject.transform.localScale = smallScale;
         }
 
         else if(this.gameObject.transform.localScale.y < 1)
         {
-            this.gameObject.transform.localScale = new Vector3(1, 1, 1);
+            this.gameObject.transform.localScale = normalScale;
         }
 
         SFXManager.PlaySFX(8);
     }
 
-    public void UpdatePizzaUI()
+    public void UpdatePizzaUI() //Method to change the amount of pizzas in UI.
     {
         pizzaUI.text = amoutOfPizzas.ToString();
     }
 
-    private void UpdateScore()
+    private void UpdateScore()  //Method to update score in UI.
     {
         score += (amoutOfPizzas * amoutOfPizzas) * 100;
         amoutOfPizzas = 0;
@@ -226,13 +235,13 @@ public class PlayerController : MonoBehaviour
         ScoreUI.text = "Score: " + score.ToString();
     }
 
-    public void AddScore(int scoreToAdd)
+    public void AddScore(int scoreToAdd)  //Method to add Score.
     {
         score += scoreToAdd;
         ScoreUI.text = "Score: " + score.ToString();
     }
 
-    private IEnumerator Shot()
+    private IEnumerator Shot() //Couroutine for shooting.
     {
         reloadTimer = 0;
         GameObject Ammo = ObjectPool.SharedInstance.GetAmmo();
@@ -244,7 +253,7 @@ public class PlayerController : MonoBehaviour
         Ammo.SetActive(false);
     }
 
-    private IEnumerator DeathRoutine()
+    private IEnumerator DeathRoutine()  //Couroutine for when player loses.
     {
         
         if(hasStarted == true)
@@ -268,10 +277,9 @@ public class PlayerController : MonoBehaviour
         
     }
 
-    private IEnumerator ShotFromBarrel()
+    private IEnumerator ShotFromBarrel()  //Couroutine for shooting player from barrel.
     {
 
-        //barrelShotEffect.transform.parent = null;
         barrelShotEffect.Play();
 
         inBarrel = false;
@@ -289,7 +297,7 @@ public class PlayerController : MonoBehaviour
         
     }
 
-    private IEnumerator StartDelay()
+    private IEnumerator StartDelay() //Couroutine for playing the transition animation before the game starts.
     {
         Physics.gravity = Vector3.zero;
         rb.useGravity = false;
@@ -380,7 +388,7 @@ public class PlayerController : MonoBehaviour
 
             transform.SetParent(other.transform);
             pizzaGuy.SetActive(false);
-            this.gameObject.transform.localScale = new Vector3(0.5f, 0.5f, 0.5f);
+            this.gameObject.transform.localScale = smallScale;
             inBarrel = true;
             playerSpeed = 0;
             transform.position = other.transform.position;

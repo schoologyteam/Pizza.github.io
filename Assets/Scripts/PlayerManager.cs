@@ -12,13 +12,7 @@ public class PlayerManager : MonoBehaviour
 
     public TMP_InputField playerNameInputField;
 
-    // Start is called before the first frame update
-    void Start()
-    {
-        //StartCoroutine(SetupRoutine());
-    }
-
-    IEnumerator SetPlayerName()
+    IEnumerator SetPlayerName() //Couroutine to set players name
     {
 
         bool done = false;
@@ -42,7 +36,7 @@ public class PlayerManager : MonoBehaviour
         yield return new WaitWhile(() => done == false);
     }
 
-    IEnumerator LoginRoutine()
+    IEnumerator LoginRoutine() //Couroutine to login player to the server.
     {
         bool done = false;
 
@@ -63,7 +57,7 @@ public class PlayerManager : MonoBehaviour
         yield return new WaitWhile(() => done == false);
     }
 
-   public IEnumerator SetupRoutine()
+   public IEnumerator SetupRoutine()  //Couroutine to setup Leaderboard.
     {
         yield return LoginRoutine();
         yield return SetPlayerName();

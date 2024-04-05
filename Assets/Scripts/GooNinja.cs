@@ -8,27 +8,27 @@ public class GooNinja : MonoBehaviour
     private GameObject Player;
 
     [SerializeField]
-    private int maxDistance;
+    private int maxDistance;  //Max Distance where Enemy can "See"
 
     [SerializeField]
-    private int points;
+    private int points;    //Score to add when destroyed by player
 
-    public PlayerController PlayerController { get; private set; }
+    public PlayerController PlayerController { get; private set; }   //Player Controller Script
 
     private Vector3 xPlosionOffset;
 
-    private GameObject sfxManager;
+    private GameObject sfxManager;   //Sound Effect Manager Object
 
-    private SFXManager SFXManager;
-
-    [SerializeField]
-    private GameObject mesh;
+    private SFXManager SFXManager;   //Sound Effect Manager Script
 
     [SerializeField]
-    private ParticleSystem effect;
+    private GameObject mesh;  //Object that holds the enemies meshes
+
+    [SerializeField]
+    private ParticleSystem effect;  //Particle effect when Enemy appears
 
     private BoxCollider col;
-    private bool hitIsActive;
+    private bool hitIsActive;  //Bool to check if RayCast Hits Player
 
     [SerializeField]
     private Vector3 offset;
@@ -60,7 +60,7 @@ public class GooNinja : MonoBehaviour
         Hit();
     }
 
-    private RaycastHit Hit()
+    private RaycastHit Hit()   //Checks if player is seen.
     {
 
         Ray ray = new Ray(transform.position + offset, transform.forward );
@@ -77,8 +77,6 @@ public class GooNinja : MonoBehaviour
         {
 
             endPos = hit.point;
-
-            //Debug.DrawLine(transform.position, endPos, Color.cyan);
 
             if (Physics.Raycast(ray, out hit, maxDistance))
             {
@@ -99,7 +97,7 @@ public class GooNinja : MonoBehaviour
         return hit;
     }
 
-    private IEnumerator ActivateMesh()
+    private IEnumerator ActivateMesh() //Couroutine to make Enemy appear
     {
         hitIsActive = true;
         SFXManager.PlaySFX(10);
@@ -135,8 +133,6 @@ public class GooNinja : MonoBehaviour
 
             SFXManager.PlaySFX(0);
             SFXManager.PlaySFX(1);
-
-            //hitIsActive = false;
 
             gameObject.SetActive(false);
         }

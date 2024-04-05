@@ -6,14 +6,12 @@ public class SFXManager : MonoBehaviour
 {
 
     
-    public List<AudioSource> sfxList = new List<AudioSource>();
+    public List<AudioSource> sfxList = new List<AudioSource>(); //List of sound effects.
 
 
-    public void PlaySFX(int sfxToPlay)
+    public void PlaySFX(int sfxToPlay)  //Method to play sound effects.
     {
 
-        //Debug.Log(sfxToPlay);
-        //Debug.Log(sfxList.Count-1);
 
         if (sfxList.Count == 0)
         {

@@ -7,10 +7,10 @@ public class InactivateShotObject : MonoBehaviour
 
     private GameObject Player;
 
-    public PlayerController PlayerController { get; private set; }
+    public PlayerController PlayerController { get; private set; }    //Player Controller Script
 
     [SerializeField]
-    private int points;
+    private int points;  //Score to add when destroyed by player
 
     private Vector3 xPlosionOffset;
 

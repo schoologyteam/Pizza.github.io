@@ -16,12 +16,12 @@ public class LeaderboardUIManager : MonoBehaviour
     public Button mainMenu;
     public Button setName;
 
-    public PlayerManager playerManager;
+    public PlayerManager playerManager;  //PlayerManager script
 
     public TMP_InputField input;
 
-    public ManagerMask Mask;
-    public string[] Sources;
+    public ManagerMask Mask; //Mask to filter bad language etc.
+    public string[] Sources; //Sources for bad language
 
     [SerializeField]
     private AudioSource sfx;
@@ -29,8 +29,11 @@ public class LeaderboardUIManager : MonoBehaviour
     [SerializeField]
     private Animator transition;
 
-    private bool active;
-    private bool nameEntered;
+    private bool active; //Bool if buttons are active
+    private bool nameEntered; //Bool to see if name is entered
+
+    [SerializeField]
+    private TextMeshProUGUI yourScore;
 
     private void Start()
     {
@@ -40,11 +43,13 @@ public class LeaderboardUIManager : MonoBehaviour
 
         nameEntered = false;
 
+        yourScore.text = "YOUR SCORE: " + PlayerPrefs.GetInt("CurrentScore").ToString(); //Gets latest score from PlayerPrefs.
+
         StartCoroutine(StartTransition());
     }
 
 
-    public void BackToMainMenu()
+    public void BackToMainMenu()    //Method to return to main menu when button is clicked.
     {
 
         if(active == true)
@@ -56,7 +61,7 @@ public class LeaderboardUIManager : MonoBehaviour
         
     }
 
-    public void SettingName()
+    public void SettingName()   //Method for setting the players name from input.
     {
         
         if(active == true && nameEntered == false)
@@ -69,13 +74,13 @@ public class LeaderboardUIManager : MonoBehaviour
         
     }
 
-    private IEnumerator StartNameSetup()
+    private IEnumerator StartNameSetup() //Couroutine to start SetupRoutine from playerManager & to activate mainMenu Button
     {
         yield return playerManager.SetupRoutine();
         mainMenu.gameObject.SetActive(true);
     }
 
-    private IEnumerator ChangeScene()
+    private IEnumerator ChangeScene()    //Couroutine to change the scene
     {
         active = false;
         sfx.Play();
@@ -84,7 +89,7 @@ public class LeaderboardUIManager : MonoBehaviour
         SceneManager.LoadScene("MainMenuScene", LoadSceneMode.Single);
     }
 
-    private IEnumerator StartTransition()
+    private IEnumerator StartTransition()  //Couroutine for start transition animation
     {
         transition.SetTrigger("Start");
         yield return new WaitForSeconds(2);

@@ -9,7 +9,7 @@ public class Customer : MonoBehaviour
 
     private GameObject Player;
 
-    public PlayerController PlayerController { get; private set; }
+    public PlayerController PlayerController { get; private set; } //Player Controller Script
 
     private GameObject sfxManager;
 

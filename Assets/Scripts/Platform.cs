@@ -5,7 +5,7 @@ using UnityEngine;
 public class Platform : MonoBehaviour
 {
 
-    private GameObject PlayerFeet;
+    private GameObject PlayerFeet;  //PlayersFeet GameObject located under the player character.
 
     private Rigidbody player_rb;
 
@@ -22,6 +22,7 @@ public class Platform : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        //Checks if players feet are above the platform & if player is falling!
         if(PlayerFeet.transform.position.y > this.transform.position.y && player_rb.velocity.y < 0)
         {
             col.enabled = true;
